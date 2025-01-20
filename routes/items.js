@@ -42,7 +42,7 @@ router.get('/', async(req, res) => {
             //             "href": "http://example.com/?page=2&limit=6"
             //         }
             //     }
-            }
+            // }
         };
 
         res.json(collection );
@@ -107,7 +107,7 @@ router.options('/seed',(req, res)=>{
 router.get('/:id', async(req, res) => {
     try{
         const { id } = req.params;
-        const item = await Item.find({_id:id});
+        const item = await Item.findOne({ _id: id }); // Use findOne instead of find since find returns an array instead of an object
         // links to self and link to collection to confirm to HATEOS HAL standards are added in schema
         res.json(item);
     }catch (error){

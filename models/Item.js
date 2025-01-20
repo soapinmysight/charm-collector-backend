@@ -12,7 +12,7 @@ const itemSchema = new mongoose.Schema({
             ret._links = {
                 self: {
                     href: `${process.env.BASE_URL}/items/${ret._id}`
-                //     load id in link dynamically
+                    //     load id in link dynamically
                 },
                 collection: {
                     href: process.env.BASE_URL
