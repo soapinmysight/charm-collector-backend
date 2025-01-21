@@ -1,7 +1,7 @@
 import mongoose, {Schema} from 'mongoose';
 
 const itemSchema = new mongoose.Schema({
-    title: {type: String, required: true},
+    score: {type: Number, required: true},
     body: {type: String, required: true},
     author: {type: String, required: true},
 }, {
@@ -15,7 +15,7 @@ const itemSchema = new mongoose.Schema({
                     //     load id in link dynamically
                 },
                 collection: {
-                    href: process.env.BASE_URL
+                    href: `${process.env.BASE_URL}/items`
                 }
             }
 

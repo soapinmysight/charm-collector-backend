@@ -5,7 +5,7 @@ import items from "./routes/items.js"
 const app = express();
 mongoose.connect(process.env.MONGO_URL);
 
-//opdracht 6.1
+// To allow retrieval of information in json only, the accept header is checked.
 app.use((req, res, next)=>{
     // Check what header client accepts
     const acceptHeader = req.headers['accept'];
@@ -24,17 +24,20 @@ app.use((req, res, next)=>{
 // CORS Middleware
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // Laat alle origins toe.
-    res.setHeader('Allow', 'GET, POST, PUT, DELETE, OPTIONS'); // Specificeer de toegestane methoden.
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Specificeer de toegestane methoden.
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept'); // Specificeer de toegestane headers.
+    // res.setHeader('Allow', 'GET, POST, PUT, DELETE, OPTIONS'); // Specificeer de toegestane methoden.
+    // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Specificeer de toegestane methoden.
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorisation'); // Specificeer de toegestane headers, waaronder content-type en accept
         next();
 });
 
-
+// Content-type control: The middleware supports both JSON and x-www-form-urlencoded for incoming requests via:
 // Middleware voor JSON-gegevens
 app.use(express.json());
 // Middleware voor www-urlencoded-gegevens
 app.use(express.urlencoded({extended: true}));
+
+
+//set base route
 app.use('/items', items)
 
 app.listen(process.env.EXPRESS_PORT, () => {

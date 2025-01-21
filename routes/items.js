@@ -53,55 +53,55 @@ router.get('/', async(req, res) => {
     }
 });
 
-// items create from form
-router.post('/', async(req, res) => {
-    try{
-        const {title, body, author} = req.body;
-        console.log(title, body, author)
+// Create item or seed items (POST /)
+router.post('/', async (req, res) => {
+    try {
+        const { method, score, body, author, amount } = req.body;
+
+        //if method === SEED was in body, use seeder
+        if (method === 'SEED') {
+            await Item.deleteMany({});
+            const seedAmount = amount || 10; // Default amount is 10 if not provided
+
+            for (let i = 0; i < seedAmount; i++) {
+                await Item.create({
+                    score: 0,
+                    body: faker.lorem.lines(2),
+                    author: faker.person.fullName(),
+                });
+            }
+
+            return res.json({ success: true, message: `${seedAmount} items seeded successfully` });
+        }
+
+        // Create a single item (normal POST request)
+        // error message for if fields are not filled
+        // if (!score || !body || !author) {
+        //     return res.status(400).json({ error: 'All fields are required' });
+        // }
+
         const item = await Item.create({
-            title: title,
+            score: score,
             body: body,
             author: author,
-        })
+        });
+
         res.json(item);
-    }catch(error){
+    } catch (error) {
         res.status(404).json({
             error: error.message
-        })
+        });
     }
 });
 
-//opdracht 6.1
+
+
 router.options('/',(req, res)=>{
     res.setHeader('Allow','GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', ['GET, POST']); // Specificeer de toegestane methoden.
     res.status(204).send();
 });
 
-// items create with seeder
-router.post('/seed', async(req,res)=>{
-    try{
-        await Item.deleteMany({});
-        // const amount = 10
-        const { amount = 10 } = req.body;
-        for (let i = 0; i < amount; i++) {
-            await Item.create({
-                title: faker.lorem.lines(1),
-                body: faker.lorem.lines(2),
-                author: faker.person.fullName(),
-            })
-        }
-        res.json({succes:true});
-    }catch(error){
-        res.status(404).json({
-            error: error.message
-        })    }
-});
-
-//opdracht 6.1
-router.options('/seed',(req, res)=>{
-    res.setHeader('Allow','POST, OPTIONS');
-    res.status(204).send();
-});
 
 // items detail
 router.get('/:id', async(req, res) => {
@@ -120,10 +120,10 @@ router.get('/:id', async(req, res) => {
 // items edit
 router.put('/:id',async (req,res)=>{
     const { id } = req.params;
-    const {title, body, author} = req.body;
+    const {score, body, author} = req.body;
     try{
         const itemUpdate = await Item.updateOne({
-            title:title,
+            score:score,
             body:body,
             author:author
         })
@@ -149,6 +149,7 @@ router.delete('/:id', async (req, res) => {
 //opdracht 6.1
 router.options('/:id',(req, res)=>{
     res.setHeader('Allow','GET, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', ['GET, POST, PUT, DELETE']); // Specificeer de toegestane methoden.
     res.status(204).send();
 });
 export default router;
