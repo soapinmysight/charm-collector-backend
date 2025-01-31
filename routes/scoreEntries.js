@@ -3,22 +3,23 @@ import ScoreEntry from "../models/ScoreEntry.js";
 import {faker} from "@faker-js/faker";
 import express from 'express';
 import mongoose from "mongoose";
+import "dotenv/config"
+
 
 const router = express.Router();
 
 router.get('/', async(req, res) => {
     try{
         const scoreEntries = await ScoreEntry.find({});
-
         // add link to self and link to collection to confirm to HATEOS HAL standards
-        const collection = {
-            scoreEntries: scoreEntries,
+        let collection = {
+            items: scoreEntries,
             _links: {
                 self: {
-                    href: `${process.env.BASE_URL}/score_entries`
+                    href: `${process.env.BASE_URL}/scoreEntries/`
                 },
                 collection: {
-                    href: `${process.env.BASE_URL}/score_entries`
+                    href: `${process.env.BASE_URL}/scoreEntries/`
                 }
             },
         };
@@ -127,7 +128,7 @@ router.put('/:id',async (req,res)=>{
         res.json(scoreEntryUpdate)
     }catch(err){
         res.status(404).json({
-            error: error.message
+            error: err.message
         })    }
 })
 

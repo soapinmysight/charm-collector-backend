@@ -1,4 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
+import "dotenv/config"
 
 const scoreEntrySchema = new mongoose.Schema({
     score: {type: Number, required: true},
@@ -12,14 +13,12 @@ const scoreEntrySchema = new mongoose.Schema({
         transform: (doc, ret) => {
             ret._links = {
                 self: {
-                    href: `${process.env.BASE_URL}/score_entries/${ret._id}`
-                    //     load id in link dynamically
+                    href: `${process.env.BASE_URL}/scoreEntries/${ret._id}`
                 },
                 collection: {
-                    href: `${process.env.BASE_URL}/score_entries`
+                    href: `${process.env.BASE_URL}/scoreEntries/`
                 }
             }
-
             delete ret._id
         }
     }
