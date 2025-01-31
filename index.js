@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from "mongoose";
-import items from "./routes/items.js"
+// import items from "./routes/scoreEntries.js"
+import ScoreEntries from "./routes/ScoreEntries.js";
 
 const app = express();
 mongoose.connect(process.env.MONGO_URL);
@@ -38,7 +39,7 @@ app.use(express.urlencoded({extended: true}));
 
 
 //set base route
-app.use('/items', items)
+app.use('/score_entries', ScoreEntries)
 
 app.listen(process.env.EXPRESS_PORT, () => {
     console.log(`Server is listening on port http://145.24.222.134:${process.env.EXPRESS_PORT}/`);
