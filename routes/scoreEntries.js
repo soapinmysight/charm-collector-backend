@@ -51,7 +51,6 @@ router.post('/', async (req, res) => {
                     author: faker.person.fullName(),
                 });
             }
-
             res.status(201).json({ success: true, message: `${seedAmount} scoreEntries seeded successfully` });
         }
 
@@ -68,10 +67,10 @@ router.post('/', async (req, res) => {
             author: author,
         });
 
-        res.status(201).json(ScoreEntry);
+        res.status(201).json(newScoreEntry);
 
     } catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             error: error.message
         });
     }
@@ -91,15 +90,9 @@ router.get('/:id', async(req, res) => {
     try{
         const { id } = req.params;
         const newScoreEntry = await ScoreEntry.findOne({ _id: id }); // Use findOne instead of find since find returns an array instead of an object
-        // links to self and link to collection to confirm to HATEOS HAL standards are added in schema
-        if (!newScoreEntry) {
-            return res.status(404).json({
-                error: `ScoreEntry met id ${id} niet gevonden.`,
-            });
-        }
         res.json(newScoreEntry);
     }catch (error){
-        res.status(500).json({
+        res.status(404).json({
             error: error.message
         })
     }
@@ -109,16 +102,13 @@ router.get('/:id', async(req, res) => {
 router.put('/:id',async (req,res)=>{
     const { id } = req.params;
     const {score, title, description, author} = req.body;
-
-    // Check if required fields are empty
-    if (!title || !description || !author) {
-        return res.status(400).json({
+    if (!title || !description || !author) {    // check if required fields are empty
+        return res.status(400).json({   //return with 400 status if empty
             error: 'All fields except score (title, description, and author) are required and cannot be empty.'
         });
     }
-    // Ensure score is filled with 0 if it's empty
-    const finalScore = score || 0;
-        try{
+    const finalScore = score || 0;    // fill score with 0 if it's empty
+    try{
         const scoreEntryUpdate = await ScoreEntry.findByIdAndUpdate(id, {
             score:finalScore,
             title:title,
@@ -126,10 +116,11 @@ router.put('/:id',async (req,res)=>{
             author:author
         })
         res.json(scoreEntryUpdate)
-    }catch(err){
+    }catch(error){
         res.status(404).json({
-            error: err.message
-        })    }
+            error: error.message
+        })
+    }
 })
 
 // scoreEntries delete
@@ -137,16 +128,10 @@ router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const result = await ScoreEntry.deleteOne({ _id: id });
-        if (result.deletedCount === 0) {
-            // Als er geen document verwijderd is, stuur een 404 response
-            return res.status(404).json({
-                error: `ScoreEntry met id ${id} niet gevonden of bestaat al niet.`,
-            });
-        }
         // Als het verwijderen gelukt is, stuur een 204 No Content response
         res.status(204).json({ success: true });
     } catch (error) {
-        res.status(500).json({
+        res.status(404).json({
             error: error.message
         })    }
 });
@@ -154,7 +139,7 @@ router.delete('/:id', async (req, res) => {
 //opdracht 6.1
 router.options('/:id',(req, res)=>{
     res.setHeader('Allow','GET, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Methods', ['GET, POST, PUT, DELETE']); // Specificeer de toegestane methoden.
+    res.setHeader('Access-Control-Allow-Methods', ['GET, POST, PUT, DELETE']);
     res.status(204).send();
 });
 export default router;

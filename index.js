@@ -1,6 +1,5 @@
 import express from 'express';
 import mongoose from "mongoose";
-// import items from "./routes/scoreEntries.js"
 import scoreEntries from "./routes/scoreEntries.js";
 
 const app = express();
@@ -24,10 +23,10 @@ app.use((req, res, next)=>{
 
 // CORS Middleware
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Laat alle origins toe.
-    // res.setHeader('Allow', 'GET, POST, PUT, DELETE, OPTIONS'); // Specificeer de toegestane methoden.
-    // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Specificeer de toegestane methoden.
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorisation'); // Specificeer de toegestane headers, waaronder content-type en accept
+    // Laat alle origins toe.
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Specificeer de toegestane headers, waaronder content-type en accept
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorisation');
         next();
 });
 

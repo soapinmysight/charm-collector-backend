@@ -1,6 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
 import "dotenv/config"
-
 const scoreEntrySchema = new mongoose.Schema({
     score: {type: Number, required: true},
     title: {type: String, required: true},
@@ -24,5 +23,4 @@ const scoreEntrySchema = new mongoose.Schema({
     }
 });
 const ScoreEntry = mongoose.model('ScoreEntry', scoreEntrySchema);
-
 export default ScoreEntry
