@@ -62,18 +62,15 @@ router.options('/', (req, res) => {
 
 // scoreEntries detail
 router.get('/:id', async (req, res) => {
-    let scoreEntry = null
     try {
         const { id } = req.params;
         const scoreEntry = await ScoreEntry.findById(id);
+        if (!scoreEntry) {
+            return res.status(404).json({ error: 'ScoreEntry not found' });
+        }
         res.json(scoreEntry);
     } catch (error) {
-        if (scoreEntry === null){
-            res.status(404).json('No scoreEntry with this id exists')
-        } else{
-            res.status(400).json({ error });
-
-        }
+        res.status(404).json({ error: 'Invalid ID format' });
     }
 });
 
@@ -110,12 +107,13 @@ router.delete('/:id', async (req, res) => {
         errorType = 1
         const result = await ScoreEntry.findByIdAndDelete(id);
         console.log('result', result);
+
         res.status(204).send();
     } catch (error) {
         if (errorType === 0) {
             return res.status(404).json({error: 'ScoreEntry not found'});
         } else {
-            res.status(500).json({error});
+            res.status(500).json({error: `server error`});
         }
     }
 });
