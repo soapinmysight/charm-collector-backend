@@ -70,7 +70,7 @@ router.get('/:id', async (req, res) => {
         }
         res.json(scoreEntry);
     } catch (error) {
-        res.status(404).json({ error: 'Invalid ID format' });
+            res.status(404).json({ error: 'ScoreEntry not found' });
     }
 });
 
@@ -84,10 +84,7 @@ router.put('/:id', async (req, res) => {
     const finalScore = score || 0;
     let updatedScoreEntry = null;
     try {
-        const updatedScoreEntry = await ScoreEntry.findByIdAndUpdate(id, { score: finalScore, title, description, author });
-        if (!updatedScoreEntry) {
-            return res.status(404).json({ error: 'ScoreEntry not found' });
-        }
+        updatedScoreEntry = await ScoreEntry.findByIdAndUpdate(id, { score: finalScore, title, description, author });
         res.json(updatedScoreEntry);
     } catch (error) {
         if (updatedScoreEntry === null){
